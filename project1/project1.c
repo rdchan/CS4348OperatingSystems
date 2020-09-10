@@ -60,7 +60,9 @@ int main() {
         chdir(directory_one);
         system("tail -vn +1 *");
 
-        close(1); //nothing left to write, let child b exit properly
+        fprintf(stderr, "child a closing the pipe");
+        close(1); //nothing left to write, let child b know we are done
+        fprintf(stderr, "child a pipe closed");
         //now we've done our work of sending the information. time to read from child b and make its files.
         
         char *line = NULL;
@@ -70,7 +72,7 @@ int main() {
 
         bool check_false_empty_line = false;
         while(getline(&line, &size, stdin) != -1) {
-            //fprintf(stderr, "from child b >> :%s:", line);
+            fprintf(stderr, "from child b >> :%s:", line);
 
             char *isfile = strstr(line, header);
             if(isfile != NULL) { 
@@ -108,7 +110,9 @@ int main() {
             fclose(fp);
             //fprintf(stderr, "<< nothing left in pipe, child a is closing file\n");
         }       
-        //fprintf(stderr, "child a exiting");
+
+        fprintf(stderr, "child a exiting");
+        exit(0);
 
     } else {
         //parent process. make child b.
@@ -136,7 +140,9 @@ int main() {
             chdir(directory_two);
             system("tail -vn +1 *");
             
-            close(1); //nothing left to write, let child a exit properly
+            fprintf(stderr, "child b closing the pipe");
+            close(1); //nothing left to write, let child a know that we are done
+            fprintf(stderr, "child b pipe closed");
 
             //now we've done our work of sending the information. time to read from child b and make its files.
             char *line = NULL;
@@ -146,7 +152,7 @@ int main() {
 
             bool check_false_empty_line = false;
             while(getline(&line, &size, stdin) != -1) {
-                //printf("from child b >> %s", line);
+                fprintf(stderr, "from child a >> %s", line);
                 
                 char *isfile = strstr(line, header);
                 if(isfile != NULL) { 
@@ -184,10 +190,21 @@ int main() {
                 fclose(fp);
             }       
 
+            fprintf(stderr, "child b exiting");
+            exit(0);
         } else {
             //finally just the parent.
+            int returnStatus;
             printf("hello, I am parent!, pid is %d\n", getpid());
+            waitpid(pida, &returnStatus, 0);
+            if(returnStatus == 0) { printf("child a terminated as expected\n"); } else {
+                printf("child a terminated with an error\n"); }
+            waitpid(pidb, &returnStatus, 0);
+            if(returnStatus == 0) { printf("child b terminated as expected\n"); } else {
+                printf("child b terminated with an error\n"); }
+            
         }
     }
 
+    return 0;
 }
