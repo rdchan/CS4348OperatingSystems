@@ -16,7 +16,9 @@ Use the Makefile. Run `make`. This will create a binary `project1` in `bin/` tha
 
 # Screenshots
 Here's the directories and the contents of their files before running the program: 
+
 ![before](images/before.png)
 
 And here's those afterwards:
+
 ![after](images/after.png)
