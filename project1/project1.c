@@ -7,6 +7,8 @@
 #include <fcntl.h>
 
 int main() {
+    const char header[5] = "==> ";
+    const char exitstring[20] = "ENDOFFILES";
     //initialize pipe file descriptors. one to for child a to write to child b, and one for opposite
     int pipeatob[2];
     int pipebtoa[2];
@@ -16,29 +18,19 @@ int main() {
      *
      * child b writes to child a using pipebtoa. CHILDB_WRITE is pipebtoa[1]
      *                                           CHILDA_READ is pipebtoa[0]
-     *
      */
+
     //pid objects to check return value from fork calls
     pid_t pida;
     pid_t pidb;
 
-
     char directory_one[100] = "dir1"; 
     char directory_two[100] = "dir2"; 
+
     //attempt to create the two pipes
     if(pipe(pipeatob) < 0 || pipe(pipebtoa) < 0) {
         //couldn't make pipes.
         printf("ERROR: Failed to create an essential pipe");
-        return -1;
-    }
-
-    if(fcntl(pipeatob[0], F_SETFL, O_NONBLOCK) < 0) {
-        printf("ERROR: Failed to set reading file descriptors to nonblocking");
-        return -1;
-    }
-
-    if(fcntl(pipebtoa[0], F_SETFL, O_NONBLOCK) < 0) {
-        printf("ERROR: Failed to set reading file descriptors to nonblocking");
         return -1;
     }
 
@@ -66,39 +58,59 @@ int main() {
         //now send child b the contents of this directory. This is done with the tail -vn +1 *.
             //for every file in the directory, it runs tail with -n +1. this flag says to print the file starting from line 1. the -v flag forces it to print the file name as a header before the contents of the file
             //this means that if a file contains ==> as a line, then it'll create a new file. helps for testing.
+    
+        int status;
+        status = chdir(directory_one); //returns 0 on success, -1 on fail. errno is set 
+        if(status == -1) { 
+            fprintf(stderr, "[FATAL]: child a cannot change directory to %s", directory_one); 
+            exit(-1);
+        }
 
-        chdir(directory_one); 
-        system("tail -vn +1 *");
-        system("echo ENDOFFILES");
+        status = system("tail -vn +1 *");
+        if(status == -1) {
+            fprintf(stderr, "[FATAL]: child a system call tail failed");
+            exit(-1);
+        }
 
-        close(1); //nothing left to write, let child b know we are done
+        //send clear message that there is nothing left in the pipe. otherwise getline may hang
+        //an alternative solution is to make the pipes nonblocking and wait for a timeout
+        //this runs more reliably on all machines though
+        status = system("echo ENDOFFILES");
+        if(status == -1) {
+            fprintf(stderr, "[FATAL]: child a system call echo failed");
+            exit(-1);
+        }
 
-        //now we've done our work of sending the information. time to read from child b and make its files.
-        char *line = NULL;
-        size_t size;
-        const char header[5] = "==> ";
-        const char exitstring[20] = "ENDOFFILES";
-        FILE *fp = NULL;
+        //nothing left to write, let child b know we are done
+        status = close(1); 
+        if(status == -1) {
+            fprintf(stderr, "[FATAL]: child a close file descriptor 1 (stdout) failed");
+            exit(-1);
+        } 
 
-        bool check_false_empty_line = false;
-        //bool got_first_message = false;
+        //now we've done our work of sending the information. 
+        //time to read from child b and make its files.
+        char *line = NULL; //next line from the pipe
+        size_t size; //size of message from getline
+        FILE *fp = NULL; //pointer to the open file. changes value upon getting new headers
+
+        //used to avoid extra line feed on all files except the last one listed
+        bool check_false_empty_line = false; 
+
+        //check that the size of the message is nonnegative
         while(getline(&line, &size, stdin) >= 0) {
-        /*while(1) {
-
-            int abc = getline(&line, &size, stdin);
-            fprintf(stderr, "   [abc] = %d\n", abc);
-            //if no message yet, spinlock until first message
-            //if we have gotten a first message and there's none left, exit
-            if(abc < 0) {
-
-            got_first_message = true;
-        */
+            
+            //strstr looks for an occurrence of the substring in the string.
+            //here we check if the line contains the header for a filename or the exitstring
             char *isfile = strstr(line, header);
             char *isdone = strstr(line, exitstring);
+
+            //once we are done, we can break out of the while loop, close the last file, and terminate
             if(isdone != NULL) {
                 break;
             }
-            //fprintf(stderr, "from b >> %s", line);
+
+            //if it is a filename, extract the filename, close the previous file, and open this new file
             if(isfile != NULL) { 
                 check_false_empty_line = false;
                 char filename[BUFSIZ];
@@ -110,11 +122,13 @@ int main() {
 
                 //open a file for writing with the filename we parsed from child b
                 fp = fopen(filename, "w");
-            } else {
+            } else { // otherwise, its either data or an extra linefeed.
+                //if it's data and the previous line was a linefeed, append the linefeed
                 if(check_false_empty_line) {
                     fputs("\n", fp);
                     check_false_empty_line = false;
                 }
+                //if a file is open, either set the linefeed flag or write the data
                 if(fp != NULL) {
                     if((int)*line == 10) {
                         check_false_empty_line = true;
@@ -122,26 +136,28 @@ int main() {
                         fputs(line, fp);
                     }
                 } else {
-                    fprintf(stderr, "file does not exist\n]");
+                    fprintf(stderr, "file does not exist, ignoring contents\n]");
                 }
             }
         }
        
-        //when there's nothing left to read from the pipe, try to close any open file
+        //when there's nothing left to read from the pipe, close the last file.
+        //this should always run, but check anyways
         if(fp != NULL) {
             fclose(fp);
         }       
-
+    
+        //child a terminates
         exit(0);
     } else {
-        //parent process. make child b.
+        //parent process of child a. make child b.
         pidb = fork();
 
         if(pidb < 0) {
             printf("ERROR: fork two failed\n");
             return -1;
         } else if(pidb == 0) {
-            //child b exclusive
+            //child b exclusive. near duplicate of child a, but with different pipe and directory. Check above for more information
 
             //don't need to mess with child a sides of the pipes, so close them.
             close(pipebtoa[0]); //child a read side
@@ -155,17 +171,37 @@ int main() {
             close(pipeatob[0]);
             close(pipebtoa[1]);
 
-            chdir(directory_two);
-            system("tail -vn +1 *");
-            system("echo ENDOFFILES");
-            
-            close(1); //nothing left to write, let child a know that we are done
+            int status;
+            status = chdir(directory_two); //returns 0 on success, -1 on fail. errno is set 
+            if(status == -1) { 
+                fprintf(stderr, "[FATAL]: child b cannot change directory to %s", directory_two); 
+                exit(-1);
+            }
+
+            status = system("tail -vn +1 *");
+            if(status == -1) {
+                fprintf(stderr, "[FATAL]: child b system call tail failed");
+                exit(-1);
+            }
+
+            //send clear message that there is nothing left in the pipe. otherwise getline may hang
+            //an alternative solution is to make the pipes nonblocking and wait for a timeout
+            //this runs more reliably on all machines though
+            status = system("echo ENDOFFILES");
+            if(status == -1) {
+                fprintf(stderr, "[FATAL]: child b system call echo failed");
+                exit(-1);
+            } 
+
+            status = close(1); //nothing left to write, let child a know that we are done
+            if(status == -1) {
+                fprintf(stderr, "[FATAL]: child b close file descriptor 1 (stdout) failed");
+                exit(-1);
+            } 
     
             //now we've done our work of sending the information. time to read from child b and make its files.
             char *line = NULL;
             size_t size;
-            const char header[5] = "==> ";
-            const char exitstring[20] = "ENDOFFILES";
             FILE *fp = NULL;
 
             bool check_false_empty_line = false;
@@ -210,7 +246,11 @@ int main() {
 
             exit(0);
         } else {
-            //finally just the parent.
+            //just the parent.
+
+            //wait for children to terminate, and then exit cleanly
+            //you could wait for any two children of the same group id to exit, that way order doesn't matter. 
+            //here order is checked, but both are expected to terminate at similar times so it doesn't really matter.
             int returnStatus;
 
             waitpid(pida, &returnStatus, 0);
