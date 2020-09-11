@@ -15,6 +15,8 @@ After these steps, `dir1` and `dir2` will be identical
 Use the Makefile. Run `make`. This will create a binary `project1` in `bin/` that you can run with `./bin/project1`. Run `ls -Rl` before and after you run the program and compare. Note that if you want to run the program again, the directories will already be synchronized, so you should do `make clean`.
 
 # Screenshots
-Here's the directories and the contents of their files before running the program: ![before](images/before.png)
+Here's the directories and the contents of their files before running the program: 
+![before](images/before.png)
 
-And here's that afterwards ![after](images/after.png)
+And here's those afterwards:
+![after](images/after.png)
