@@ -42,7 +42,7 @@ void *listenToProcess(void* thread_params) {
              pthread_exit(NULL);
              return NULL;
         }
-        fprintf(stderr, "process %d: %s", ls->speaking_process_idx, buffer);
+        fprintf(stderr, "process %d: %s", ls->speaking_process_idx + 1, buffer);
      }       
 }
 
@@ -294,19 +294,15 @@ int main(int argc, char *argv[])
          serv_addr.sin_family = AF_INET;
          serv_addr.sin_addr.s_addr = INADDR_ANY;
          serv_addr.sin_port = htons(portno[2]);
-         fprintf(stderr, "process 2 about to bind with p3\n");
          if (bind(sockfd[2], (struct sockaddr *) &serv_addr,
                   sizeof(serv_addr)) < 0) 
                   error("ERROR on binding to p3");
-         fprintf(stderr, "process 2 about to listen on p3\n");
          listen(sockfd[2],5);
          clilen = sizeof(cli_addr);
-         fprintf(stderr, "process 2 about to accept p3\n");
          sockfd[2] = accept(sockfd[2], (struct sockaddr *) &cli_addr, &clilen);
          if (sockfd[2] < 0) 
               error("ERROR on accepting p3");
          //if we got here, then the connection to process 3 is running
-         fprintf(stderr, "process 2 about to make thread for p3\n");
          isStopped[3] =  false;
          params[2].sockfd = sockfd[2];
          params[2].speaking_process_idx = 3;
@@ -401,25 +397,40 @@ int main(int argc, char *argv[])
         if(isStopped[this_process_idx]) continue; //if we are stopped, but not everyone else is, just wait until they are.
         bzero(buffer, 256);
         fgets(buffer, 255, stdin);
-        n = write(sockfd[0],buffer,strlen(buffer));
-        if (n < 0) error("ERROR writing to socket");
-        n = write(sockfd[1],buffer,strlen(buffer));
-        if (n < 0) error("ERROR writing to socket");
-        n = write(sockfd[2],buffer,strlen(buffer));
-        if (n < 0) error("ERROR writing to socket");
-        if(buffer[0] == 'S' && buffer[1] == 't' && buffer[2] == 'o' && buffer[3] == 'p') {
-             fprintf(stderr, "process %d (me) stopped\n", this_process_idx);
-             //close(newsockfd); moving to close all at the end
-             //we stopped, mark ourselves as ready to exit
-             isStopped[this_process_idx] = true;
+        if(buffer[0] == 's' && buffer[1] == 'e' && buffer[2] == 'n' && buffer[3] == 'd') {
+            
+            char *message = buffer;
+            message += 7;
+            int receiver_id = buffer[5] - '0';
+            if(receiver_id == 0) {
+                //send to all and error check
+                for(int i = 0; i < 3; i++) {
+                    n = write(sockfd[i], message, strlen(message));
+                    if (n < 0) error("ERROR writing to socket");
+                }
+            } else if (receiver_id < 5) {
+                receiver_id--;
+                if(receiver_id > this_process_idx) receiver_id--;
+                n = write(sockfd[receiver_id], message, strlen(message));
+                if (n < 0) error("ERROR writing to socket");
+            }
+        } else if(buffer[0] == 'S' && buffer[1] == 't' && buffer[2] == 'o' && buffer[3] == 'p') {
+            for(int i = 0; i < 3; i++) {
+                n = write(sockfd[i],buffer,strlen(buffer));
+                if (n < 0) error("ERROR writing to socket");
+            }
+            fprintf(stderr, "process %d (me) stopped\n", this_process_idx);
+            //close(newsockfd); moving to close all at the end
+            //we stopped, mark ourselves as ready to exit
+            isStopped[this_process_idx] = true;
+        } else {
+            fprintf(stderr, "Usage: send d message or Stop\n");
         }
      }
-    fprintf(stderr, "everyone stopped\n");
     for(int i = 0; i < 3; i++)
         pthread_join(thread_id[i], NULL);
-    fprintf(stderr, "threads done\n");
-
     for(int i = 0; i < 3; i++)
         close(sockfd[i]);
+
     return 0; 
 }
