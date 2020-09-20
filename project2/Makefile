@@ -1,8 +1,4 @@
-all: server client
-server: server.c
-	gcc server.c -o bin/server -lpthread
-client: client.c
-	gcc client.c -o bin/client -lpthread
+project2: project2.c
+	gcc project2.c -o bin/project2 -lpthread
 clean:
-	rm $(shell pwd)/bin/server
-	rm $(shell pwd)/bin/client
+	rm $(shell pwd)/bin/project2

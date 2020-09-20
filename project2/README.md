@@ -11,7 +11,20 @@ In this project I used sockets and threads to implement an inter-process communi
 * **Stop** sends a `Stop` message to all other processes and marks own state as *stopped*. A *stopped* process can receive messages (and print them to the screen) but cannot send any more messages. When a processing has received `Stop` from the 3 other processes and is also `stopped`, then the process closes all of its socket connections, collects threads and exits gracefully
 
 # Running
-Use the Makefile. I'll have more instructions once it works.
+Use the Makefile, this will generate a `project2` exectuble at `bin/project2`. From here run 4 instances of the program, either use 4 terminal emulators or a program like `tmux`. For running on 4 `netXX` machines, here is an example of how to run the program
 
+Process 1  `you@netAA > ./project2 5050 5051 5052`
+
+Process 2 `you@netBB > ./project2 netAA.utdallas.edu 5050 5053 5054`
+
+Process 3 `you@netCC > ./project2 netAA.utdallas.edu 5051 netBB.utdallas.edu 5053 5055`
+
+Process 4 `you@netCC > ./project2 netAA.utdallas.edu 5052 netBB.utdallas.edu 5054 netCC.utdallas.edu 5055`
+
+To run on a local machine, replace all `netXX.utdallas.edu` addresses with `localhost`. This is what the connections look like:
+
+![connection layout](images/socketmap.png)
 # Video?
-I don't know if I'll upload a video or some screenshots. We will see what makes sense.
+I don't know if I'll upload a video, but here is a screenshot of the program running on 4 `netXX` machines. The order may be a little hard to figure out, lines preceded by `process #:` are printing what was sent to the running process, and lines with `send` and `Stop` were typed into that terminal and sent out.
+
+![net run](images/screenshot.png)
