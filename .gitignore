@@ -2,4 +2,5 @@
 *.swp
 notes
 */bin/*
+*.tar
 
