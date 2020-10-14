@@ -9,6 +9,7 @@
 #include <linux/types.h>
 #include <linux/slab.h>
 
+//define the birthday structure to be used as data for linked list
 struct birthday {
     int day;
     int month;
@@ -30,9 +31,9 @@ int entry_point(void)
        printk(KERN_INFO "Loading Rishi's Module\n");
 
        for(i = 0; i < 5; i++) {
-           struct birthday *person_i;
-           person_i = kmalloc(sizeof(*person_i), GFP_KERNEL);
-           person_i->day = i+1;
+           struct birthday *person_i; //new struct memory for each person
+           person_i = kmalloc(sizeof(*person_i), GFP_KERNEL); //allocate kernel memory 
+           person_i->day = i+1;  //fixed (static) dummy birthdays
            person_i->month = i+2;
            person_i->year = 2020;
            INIT_LIST_HEAD(&person_i->list);
@@ -46,36 +47,25 @@ int entry_point(void)
         printk(KERN_INFO "person %d has been added with birthday %d/%d/%d\n", counter, ptr->day, ptr->month, ptr->year);
         counter++;
        }
-       
 
        return 0;
 }
 
 /* This function is called when the module is removed. */
 void exit_point(void) {
-	printk(KERN_INFO "Removing Rishi's Module\n");
 
+    //next pointer is required for "safe" iteration that doesn't break when deleting an item
     struct birthday *ptr, *next;
-    
     int counter = 1;
 
-    struct birthday *ptr2, *next2;
-    int counter2 = 1;
+	printk(KERN_INFO "Removing Rishi's Module\n");
 
     list_for_each_entry_safe(ptr, next, &birthday_list, list) {
         //on each iteration, ptr points to the next birthdady struct
-        printk(KERN_INFO "person %d exists whose birthday was %d/%d/%d", counter, ptr->day, ptr->month, ptr->year);
-       // list_del(&ptr->list);
-       // kfree(ptr);
+        printk(KERN_INFO "deleted person %d whose birthday was %d/%d/%d\n", counter, ptr->day, ptr->month, ptr->year);
+        list_del(&ptr->list); //delete from the list
+        kfree(ptr); //return kernel allocated memory
         counter++;
-    }
-
-
-    list_for_each_entry_safe(ptr2, next2, &birthday_list, list) {
-        printk(KERN_INFO "removed person %d whose birthday was %d/%d/%d", counter2, ptr2->day, ptr2->month, ptr2->year);
-        list_del(&ptr2->list);
-        kfree(ptr2);
-        counter2++;
     }
 
 }
