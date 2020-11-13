@@ -1,69 +1,70 @@
-[ 3705.872628] Loading Dining Philosopher Module 2.1
-[ 3707.971723] Phil 2 ate.	29 food remains
-[ 3708.738531] Phil 4 ate.	28 food remains
-[ 3709.012567] Phil 6 ate.	27 food remains
-[ 3710.225486] Phil 1 ate.	26 food remains
-[ 3711.156594] Phil 3 ate.	25 food remains
-[ 3711.156599] Phil 5 ate.	24 food remains
-[ 3713.025083] Phil 0 ate.	23 food remains
-[ 3714.025069] Phil 2 ate.	22 food remains
-[ 3714.289493] Phil 4 ate.	21 food remains
-[ 3714.349755] Phil 6 ate.	20 food remains
-[ 3716.988215] Phil 5 ate.	19 food remains
-[ 3717.028971] Phil 3 ate.	18 food remains
-[ 3717.028978] Phil 1 ate.	17 food remains
-[ 3719.076537] Phil 6 ate.	16 food remains
-[ 3719.514570] Phil 2 ate.	15 food remains
-[ 3720.340333] Phil 4 ate.	14 food remains
-[ 3720.803513] Phil 0 ate.	13 food remains
-[ 3722.377013] Phil 1 ate.	12 food remains
-[ 3722.698444] Phil 3 ate.	11 food remains
-[ 3722.698449] Phil 5 ate.	10 food remains
-[ 3724.931268] Phil 6 ate.	9 food remains
-[ 3725.192810] Phil 2 ate.	8 food remains
-[ 3726.545587] Phil 4 ate.	7 food remains
-[ 3727.830391] Phil 0 ate.	6 food remains
-[ 3729.514256] Phil 5 ate.	5 food remains
-[ 3729.514273] Phil 3 ate.	4 food remains
-[ 3730.253124] Phil 1 ate.	3 food remains
-[ 3732.180299] Phil 6 ate.	2 food remains
-[ 3732.292261] Phil 2 ate.	1 food remains
-[ 3733.345299] Phil 4 ate.	0 food remains
-[ 3733.909681] Phil 0 on cycle 3 woke up to no food after sleeping for 3228
-[ 3733.909684] 	1) Phil 0 slept for 2304ms and ate for 1319ms
-[ 3733.909685] 	2) Phil 0 slept for 3761ms and ate for 1568ms
-[ 3733.909686] 	3) Phil 0 slept for 2274ms and ate for 2414ms
-[ 3734.392612] Phil 3 on cycle 4 woke up to no food after sleeping for 2992
-[ 3734.392614] 	1) Phil 3 slept for 2103ms and ate for 1380ms
-[ 3734.392616] 	2) Phil 3 slept for 2782ms and ate for 2479ms
-[ 3734.392616] 	3) Phil 3 slept for 2108ms and ate for 2490ms
-[ 3734.392617] 	4) Phil 3 slept for 2442ms and ate for 1709ms
-[ 3735.309505] Phil 5 on cycle 4 woke up to no food after sleeping for 3121
-[ 3735.309508] 	1) Phil 5 slept for 3841ms and ate for 1720ms
-[ 3735.309509] 	2) Phil 5 slept for 2992ms and ate for 1956ms
-[ 3735.309510] 	3) Phil 5 slept for 3741ms and ate for 2225ms
-[ 3735.309511] 	4) Phil 5 slept for 3175ms and ate for 2664ms
-[ 3735.604364] Phil 1 on cycle 4 woke up to no food after sleeping for 3306
-[ 3735.604367] 	1) Phil 1 slept for 2217ms and ate for 2795ms
-[ 3735.604368] 	2) Phil 1 slept for 3767ms and ate for 2160ms
-[ 3735.604369] 	3) Phil 1 slept for 2130ms and ate for 2208ms
-[ 3735.604370] 	4) Phil 1 slept for 2606ms and ate for 2033ms
-[ 3736.701274] Phil 2 on cycle 5 woke up to no food after sleeping for 2612
-[ 3736.701277] 	1) Phil 2 slept for 2102ms and ate for 2251ms
-[ 3736.701278] 	2) Phil 2 slept for 3793ms and ate for 2998ms
-[ 3736.701279] 	3) Phil 2 slept for 2015ms and ate for 2327ms
-[ 3736.701280] 	4) Phil 2 slept for 3177ms and ate for 1174ms
-[ 3736.701280] 	5) Phil 2 slept for 2671ms and ate for 1786ms
-[ 3736.984059] Phil 6 on cycle 5 woke up to no food after sleeping for 3068
-[ 3736.984072] 	1) Phil 6 slept for 3148ms and ate for 1307ms
-[ 3736.984079] 	2) Phil 6 slept for 3419ms and ate for 1508ms
-[ 3736.984085] 	3) Phil 6 slept for 3212ms and ate for 1718ms
-[ 3736.984090] 	4) Phil 6 slept for 2830ms and ate for 2895ms
-[ 3736.984094] 	5) Phil 6 slept for 3427ms and ate for 1724ms
-[ 3737.262980] Phil 4 on cycle 5 woke up to no food after sleeping for 2864
-[ 3737.262983] 	1) Phil 4 slept for 2869ms and ate for 2415ms
-[ 3737.262984] 	2) Phil 4 slept for 3128ms and ate for 2694ms
-[ 3737.262985] 	3) Phil 4 slept for 3345ms and ate for 2352ms
-[ 3737.262985] 	4) Phil 4 slept for 3844ms and ate for 2962ms
-[ 3737.262986] 	5) Phil 4 slept for 3825ms and ate for 1043ms
-[ 3852.260162] Removing Dining Philosopher Module
+[  930.798312] Loading Dining Philosopher Module 2.1
+[  930.798525] All threads running, let the eating begin!
+[  932.919462] Phil 5 ate.	29 food remains
+[  932.987227] Phil 3 ate.	28 food remains
+[  933.908445] Phil 1 ate.	27 food remains
+[  934.148126] Phil 6 ate.	26 food remains
+[  934.387688] Phil 4 ate.	25 food remains
+[  936.765820] Phil 0 ate.	24 food remains
+[  936.765840] Phil 2 ate.	23 food remains
+[  937.447378] Phil 5 ate.	22 food remains
+[  937.928970] Phil 3 ate.	21 food remains
+[  939.359328] Phil 6 ate.	20 food remains
+[  939.359334] Phil 1 ate.	19 food remains
+[  939.736283] Phil 4 ate.	18 food remains
+[  941.584542] Phil 2 ate.	17 food remains
+[  941.759286] Phil 0 ate.	16 food remains
+[  942.623511] Phil 5 ate.	15 food remains
+[  943.015677] Phil 3 ate.	14 food remains
+[  944.979380] Phil 1 ate.	13 food remains
+[  945.527298] Phil 6 ate.	12 food remains
+[  946.183112] Phil 4 ate.	11 food remains
+[  947.867509] Phil 2 ate.	10 food remains
+[  948.183099] Phil 5 ate.	9 food remains
+[  948.695668] Phil 0 ate.	8 food remains
+[  950.576297] Phil 3 ate.	7 food remains
+[  950.576313] Phil 1 ate.	6 food remains
+[  950.748284] Phil 6 ate.	5 food remains
+[  952.547500] Phil 4 ate.	4 food remains
+[  953.231242] Phil 2 ate.	3 food remains
+[  953.439137] Phil 0 ate.	2 food remains
+[  954.531274] Phil 5 ate.	1 food remains
+[  955.631477] Phil 1 ate.	0 food remains
+[  956.341039] Phil 3 on cycle 4 woke up to no food after sleeping for 3788
+[  956.341042] 	1) Phil 3 slept for 2199ms and ate for 1251ms
+[  956.341043] 	2) Phil 3 slept for 3537ms and ate for 1803ms
+[  956.341044] 	3) Phil 3 slept for 3273ms and ate for 1944ms
+[  956.341045] 	4) Phil 3 slept for 2540ms and ate for 1966ms
+[  957.171005] Phil 4 on cycle 4 woke up to no food after sleeping for 2278
+[  957.171008] 	1) Phil 4 slept for 3600ms and ate for 1162ms
+[  957.171009] 	2) Phil 4 slept for 2478ms and ate for 2881ms
+[  957.171010] 	3) Phil 4 slept for 3553ms and ate for 1994ms
+[  957.171010] 	4) Phil 4 slept for 2122ms and ate for 1980ms
+[  957.171023] Phil 6 on cycle 4 woke up to no food after sleeping for 2980
+[  957.171024] 	1) Phil 6 slept for 2990ms and ate for 1107ms
+[  957.171025] 	2) Phil 6 slept for 2747ms and ate for 2392ms
+[  957.171026] 	3) Phil 6 slept for 3766ms and ate for 1268ms
+[  957.171026] 	4) Phil 6 slept for 2608ms and ate for 1649ms
+[  958.394002] Phil 0 on cycle 4 woke up to no food after sleeping for 3186
+[  958.394004] 	1) Phil 0 slept for 3169ms and ate for 2592ms
+[  958.394006] 	2) Phil 0 slept for 2396ms and ate for 2967ms
+[  958.394006] 	3) Phil 0 slept for 3960ms and ate for 1784ms
+[  958.394007] 	4) Phil 0 slept for 2949ms and ate for 1166ms
+[  958.394022] Phil 2 on cycle 4 woke up to no food after sleeping for 2131
+[  958.394023] 	1) Phil 2 slept for 3679ms and ate for 1160ms
+[  958.394024] 	2) Phil 2 slept for 2657ms and ate for 1254ms
+[  958.394025] 	3) Phil 2 slept for 3942ms and ate for 2703ms
+[  958.394026] 	4) Phil 2 slept for 2650ms and ate for 2393ms
+[  959.304271] Phil 5 on cycle 5 woke up to no food after sleeping for 2128
+[  959.304273] 	1) Phil 5 slept for 2132ms and ate for 1222ms
+[  959.304274] 	2) Phil 5 slept for 3296ms and ate for 1899ms
+[  959.304275] 	3) Phil 5 slept for 3260ms and ate for 1282ms
+[  959.304275] 	4) Phil 5 slept for 3571ms and ate for 2559ms
+[  959.304276] 	5) Phil 5 slept for 2048ms and ate for 2629ms
+[  962.019393] Phil 1 on cycle 5 woke up to no food after sleeping for 3621
+[  962.019395] 	1) Phil 1 slept for 3117ms and ate for 2851ms
+[  962.019396] 	2) Phil 1 slept for 2529ms and ate for 2218ms
+[  962.019397] 	3) Phil 1 slept for 3392ms and ate for 2882ms
+[  962.019398] 	4) Phil 1 slept for 2340ms and ate for 1825ms
+[  962.019399] 	5) Phil 1 slept for 2595ms and ate for 2755ms
+[  962.019423] Removing Dining Philosopher Module

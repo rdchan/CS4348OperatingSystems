@@ -12,8 +12,6 @@
 #include <linux/delay.h> //for usleep_range
 #include <linux/random.h> //for get_random_bytes to create a random integer
 
-bool all_threads_running; //used to signal that philosophers can start thinking/eating
-
 //mutex for bowl, to ensure that count decreases accordingly when there are multiple modifying threads
 static struct semaphore bowl;
 static struct semaphore forks[7]; //mutex for acquiring forks
@@ -104,8 +102,6 @@ int entry_point(void)
         int i;
         printk(KERN_INFO "Loading Dining Philosopher Module 2.1\n");
 
-        bool all_threads_running = false;
-
         //initialize all semaphores (operataing as mutex, so start value is 1)
         sema_init(&bowl, 1);
 
@@ -113,6 +109,8 @@ int entry_point(void)
             sema_init(&forks[i], 1);
         }
 
+        //don't let any philosophers enter eating until all threads are made
+        down(&bowl);
         //create the 7 philosopher threads
         char kthreadfmt[5] = "empty";
         for(i = 0; i < 7; i++) {
@@ -124,7 +122,8 @@ int entry_point(void)
         }
 
         //now that they are all running, allow them to eat!
-        all_threads_running = true;
+        printk(KERN_INFO "All threads running, let the eating begin!\n");
+        up(&bowl);
         
 
         return 0;
